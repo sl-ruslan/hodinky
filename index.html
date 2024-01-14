@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Запис годин роботи</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f4;
+        }
+
+        #workHoursForm {
+            max-width: 400px;
+            margin: auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        input, button {
+            margin-bottom: 10px;
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        #workHoursList {
+            margin-top: 20px;
+        }
+
+        h2 {
+            color: #333;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        li {
+            background-color: #fff;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+        }
+
+        #peopleList {
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        #peopleList > div {
+            flex: 1;
+            margin: 10px;
+            padding: 15px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        #peopleList ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        #peopleList li {
+            background-color: #fff;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .edit-button, .delete-button {
+            margin-left: 10px;
+            cursor: pointer;
+        }
+
+        /* Додано медіазапит для адаптації до екранів менш як 600px */
+        @media screen and (max-width: 600px) {
+            #workHoursForm {
+                max-width: 100%;
+            }
+        }
+        body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  margin: 20px;
+  background-color: #f4f4f4;
+}
+
+#workHoursForm {
+  max-width: 400px;
+  margin: auto;
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+input, button {
+  margin-bottom: 10px;
+  width: 100%;
+  padding: 8px;
+  box-sizing: border-box;
+}
+
+button {
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+#workHoursList {
+  margin-top: 20px;
+}
+
+h2 {
+  color: #333;
+}
+
+ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+li {
+  background-color: #fff;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 4px;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+}
+
+#peopleList {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+#peopleList > div {
+  flex: 1;
+  margin: 10px;
+  padding: 15px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+        
+        #peopleList {
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        #peopleList > div {
+            flex: 1;
+            margin: 10px;
+            padding: 15px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        #peopleList ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        #peopleList li {
+            background-color: #fff;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .edit-button, .delete-button {
+            margin-left: 10px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="workHoursForm">
+        <h2>Запис годин роботи</h2>
+        <label for="name">Ім'я:</label>
+        <input type="text" id="name" required>
+
+        <label for="date">Дата:</label>
+        <input type="date" id="date" required>
+
+        <label for="hours">Години роботи:</label>
+        <input type="number" id="hours" required>
+
+        <button onclick="addWorkHours()">Зберегти</button>
+    </div>
+
+    <div id="workHoursList">
+        <h2>Години роботи</h2>
+        <div id="peopleList"></div>
+    </div>
+
+    <script>
+        // Перевірка підтримки локального сховища
+        function storageAvailable(type) {
+            try {
+                var storage = window[type],
+                    x = '__storage_test__';
+                storage.setItem(x, x);
+                storage.removeItem(x);
+                return true;
+            }
+            catch (e) {
+                return false;
+            }
+        }
+
+        // Збереження годин роботи в локальному сховищі
+        function saveWorkHoursToStorage() {
+            var peopleList = document.getElementById('peopleList').innerHTML;
+            localStorage.setItem('peopleList', peopleList);
+        }
+
+        // Завантаження годин роботи з локального сховища
+        function loadWorkHoursFromStorage() {
+            var peopleList = localStorage.getItem('peopleList');
+            if (peopleList) {
+                document.getElementById('peopleList').innerHTML = peopleList;
+                // Сортування записів за датами
+                sortWorkHours();
+            }
+        }
+
+        function addWorkHours() {
+            var nameInput = document.getElementById('name');
+            var dateInput = document.getElementById('date');
+            var hoursInput = document.getElementById('hours');
+
+            var name = nameInput.value;
+            var date = dateInput.value;
+            var hours = hoursInput.value;
+
+            if (name && date !== "" && hours !== "") {
+                // Створення або отримання списку годин для даної людини
+                var personList = document.getElementById(name);
+                if (!personList) {
+                    if (name.toLowerCase() === 'всі') {
+                        alert('Для "всі" дані додаються для всіх користувачів.');
+                        // Збереження годин роботи для всіх користувачів
+                        var allPeople = document.getElementById('peopleList').children;
+                        for (var i = 0; i < allPeople.length; i++) {
+                            var existingPersonName = allPeople[i].id;
+                            if (existingPersonName.toLowerCase() !== 'всі') {
+                                addHoursForPerson(existingPersonName, date, hours);
+                            }
+                        }
+                    } else {
+                        personList = document.createElement('div');
+                        personList.id = name;
+                        personList.innerHTML = '<h3>' + name + '</h3><ul></ul>';
+                        document.getElementById('peopleList').appendChild(personList);
+                        // Додавання годин роботи для даного користувача
+                        addHoursForPerson(name, date, hours);
+                    }
+                } else {
+                    // Додавання годин роботи для даного користувача
+                    addHoursForPerson(name, date, hours);
+                }
+
+                // Збереження годин роботи в локальному сховищі
+                saveWorkHoursToStorage();
+
+                // Сортування записів за датами
+                sortWorkHours();
+
+                // Очистка полів введення
+                nameInput.value = '';
+                dateInput.value = '';
+                hoursInput.value = '';
+            } else {
+                alert('Будь ласка, заповніть всі поля.');
+            }
+        }
+
+        // Додавання годин роботи для певного користувача
+        function addHoursForPerson(name, date, hours) {
+            var personList = document.getElementById(name);
+            // Додавання нового запису в список годин для даної людини
+            var listItem = document.createElement('li');
+            listItem.textContent = 'Дата: ' + date + ', Години: ' + hours;
+            listItem.innerHTML += ' <span class="edit-button" onclick="editWorkHours(\'' + name + '\', \'' + date + '\', \'' + hours + '\')"> </span>';
+            listItem.innerHTML += ' <span class="delete-button" onclick="deleteWorkHours(\'' + name + '\', \'' + date + '\')">Видалити</span>';
+            personList.querySelector('ul').appendChild(listItem);
+        }
+
+        // Редагування годин роботи для певного користувача
+        function editWorkHours(name, date, hours) {
+            var newName = prompt('Введіть нове ім\'я:', name);
+            var newDate = prompt('Введіть нову дату:', date);
+            var newHours = prompt('Введіть нову кількість годин:', hours);
+
+            if (newName !== null && newDate !== null && newHours !== null) {
+                // Видалення старого запису
+                deleteWorkHours(name, date);
+                // Додавання нового запису
+                addHoursForPerson(newName, newDate, newHours);
+
+                // Збереження годин роботи в локальному сховищі
+                saveWorkHoursToStorage();
+
+                // Сортування записів за датами
+                sortWorkHours();
+            }
+        }
+
+        // Видалення годин роботи для певного користувача на конкретну дату
+function deleteWorkHours(name, date) {
+    var personList = document.getElementById(name);
+    if (personList) {
+        var ul = personList.querySelector('ul');
+        var lis = Array.from(ul.children);
+
+        lis.forEach(function(li) {
+            var liDate = li.textContent.match(/Дата: (.+),/)[1];
+            if (liDate === date) {
+                ul.removeChild(li);
+            }
+        });
+
+        // Збереження годин роботи в локальному сховищі
+        saveWorkHoursToStorage();
+
+        // Якщо рядків більше не залишилося, можна видалити блок для даного імені
+        if (ul.children.length === 0) {
+            personList.parentNode.removeChild(personList);
+        }
+
+        // Сортування записів за датами
+        sortWorkHours();
+    }
+}
+    
+
+        // Сортування записів за датами
+        function sortWorkHours() {
+            var peopleList = document.getElementById('peopleList');
+            var personDivs = Array.from(peopleList.children);
+
+            personDivs.forEach(function(personDiv) {
+                var ul = personDiv.querySelector('ul');
+                var lis = Array.from(ul.children);
+
+                lis.sort(function(a, b) {
+                    var dateA = new Date(a.textContent.match(/Дата: (.+),/)[1]);
+                    var dateB = new Date(b.textContent.match(/Дата: (.+),/)[1]);
+
+                    return dateA - dateB;
+                });
+
+                lis.forEach(function(li) {
+                    ul.appendChild(li);
+                });
+            });
+        }
+
+        // Викликати функцію завантаження при завантаженні сторінки
+        window.onload = function () {
+            // Перевірка наявності локального сховища
+            if (storageAvailable('localStorage')) {
+                // Завантаження годин роботи з локального сховища
+                loadWorkHoursFromStorage();
+            }
+        }
+
+       // Додаткова логіка для обробки імені "всі"
+    document.getElementById('name').addEventListener('input', function () {
+        var dateInput = document.getElementById('date');
+        var hoursInput = document.getElementById('hours');
+
+        if (this.value.toLowerCase() === 'всі') {
+            dateInput.removeAttribute('disabled');
+            hoursInput.removeAttribute('disabled');
+        } else {
+            dateInput.setAttribute('disabled', 'disabled');
+            hoursInput.setAttribute('disabled', 'disabled');
+        }
+    });
+
+    // Додайте цю функцію, щоб дозволити редагування полів при введенні будь-якого імені
+    document.getElementById('name').addEventListener('input', function () {
+        var dateInput = document.getElementById('date');
+        var hoursInput = document.getElementById('hours');
+        dateInput.removeAttribute('disabled');
+        hoursInput.removeAttribute('disabled');
+    });
+    </script>
+
+</body>
+</html>
