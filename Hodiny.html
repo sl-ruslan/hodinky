@@ -88,10 +88,7 @@
             box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
         }
 
-        .edit-button, .delete-button {
-            margin-left: 10px;
-            cursor: pointer;
-        }
+       
 
         /* Додано медіазапит для адаптації до екранів менш як 600px */
         @media screen and (max-width: 600px) {
@@ -198,6 +195,8 @@ li {
         }
 
         .edit-button, .delete-button {
+            border-radius: 8px;
+            background-color: rgba(255, 0, 0, 0.911);
             margin-left: 10px;
             cursor: pointer;
         }
@@ -312,7 +311,7 @@ li {
             // Додавання нового запису в список годин для даної людини
             var listItem = document.createElement('li');
             listItem.textContent = 'Дата: ' + date + ', Години: ' + hours;
-            listItem.innerHTML += ' <span class="edit-button" onclick="editWorkHours(\'' + name + '\', \'' + date + '\', \'' + hours + '\')"> </span>';
+            listItem.innerHTML += ' <span class="edit-button" onclick="editWorkHours(\'' + name + '\', \'' + date + '\', \'' + hours + '\')">Редагувати</span>';
             listItem.innerHTML += ' <span class="delete-button" onclick="deleteWorkHours(\'' + name + '\', \'' + date + '\')">Видалити</span>';
             personList.querySelector('ul').appendChild(listItem);
         }
